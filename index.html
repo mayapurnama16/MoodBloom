@@ -192,11 +192,6 @@
             <p>Mekarkan harimu, catat perasaanmu.</p>
         </header>
 
-        <!-- API CONFIG -->
-        <div class="api-config">
-            🔑 Hubungkan Bloom AI:
-            <input type="password" id="apiKey" placeholder="Masukkan Gemini API Key">
-        </div>
 
         <section class="card">
             <h2>Bagaimana perasaanmu hari ini?</h2>
@@ -269,10 +264,9 @@
 
         // Main Save Logic
         saveBtn.addEventListener('click', async () => {
-            const apiKey = document.getElementById('apiKey').value.trim();
+            const apiKey = "PASTE_API_KEY_KAMU_DI_SINI";
             const text = journalInput.value.trim();
 
-            if (!apiKey) return alert("Silakan hubungkan Gemini API Key terlebih dahulu.");
             if (!selectedMood) return alert("Pilih mood kamu hari ini ya! ✨");
             if (!text) return alert("Yuk, ceritakan sedikit jurnalmu agar AI bisa memberikan insight.");
 
