@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodBloom - Jurnal Mood Harian</title>
-    <!-- Google Fonts -->
+    <title>MoodBloom - AI Powered Journal</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,44 +15,41 @@
             --accent: #ffb7b2;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Quicksand', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
 
         body {
-            background-color: #fdfcf0; /* Warm off-white */
+            background-color: #fdfcf0;
             color: var(--text-color);
-            line-height: 1.6;
             padding: 20px;
             display: flex;
             justify-content: center;
         }
 
-        .container {
-            max-width: 600px;
-            width: 100%;
-        }
+        .container { max-width: 600px; width: 100%; }
 
-        header {
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: #88ab8e; font-size: 2.5rem; margin-bottom: 5px; }
+        header p { font-style: italic; opacity: 0.8; }
+
+        /* API Config Section */
+        .api-config {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
             text-align: center;
-            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .api-config input {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 60%;
+            margin-left: 10px;
+            outline: none;
         }
 
-        header h1 {
-            color: #88ab8e; /* Deeper sage */
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-style: italic;
-            opacity: 0.8;
-        }
-
-        /* Card Style */
         .card {
             background: var(--white);
             border-radius: 20px;
@@ -62,17 +58,14 @@
             margin-bottom: 30px;
         }
 
-        h2 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+        h2 { font-size: 1.2rem; margin-bottom: 15px; text-align: center; }
 
-        /* Mood Selector */
         .mood-selector {
             display: flex;
             justify-content: space-around;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .mood-btn {
@@ -82,141 +75,113 @@
             padding: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            width: 70px;
+            width: 75px;
         }
 
-        .mood-btn span {
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
+        .mood-btn:hover { background: var(--soft-blue); }
+        .mood-btn.active { border-color: var(--accent); background: var(--soft-pink); transform: scale(1.1); }
 
-        .mood-btn:hover {
-            transform: translateY(-5px);
-            background: var(--soft-blue);
-        }
-
-        .mood-btn.active {
-            border-color: var(--accent);
-            background: var(--soft-pink);
-            transform: scale(1.1);
-        }
-
-        /* Journal Input */
         textarea {
             width: 100%;
-            height: 120px;
+            height: 110px;
             border: 2px solid #eee;
             border-radius: 15px;
             padding: 15px;
             resize: none;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: 0.3s;
         }
+        textarea:focus { border-color: var(--sage-green); }
 
-        textarea:focus {
-            border-color: var(--sage-green);
-        }
-
-        .char-count {
-            text-align: right;
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: #aaa;
-        }
+        .char-count { text-align: right; font-size: 0.75rem; margin-top: 5px; color: #aaa; }
 
         .btn-save {
             width: 100%;
             background-color: #88ab8e;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 15px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             margin-top: 15px;
-            transition: background 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
         }
-
-        .btn-save:hover {
-            background-color: #6d8a71;
-        }
+        .btn-save:hover { background-color: #6d8a71; }
+        .btn-save:disabled { background-color: #ccc; cursor: not-allowed; }
 
         /* Timeline History */
-        .history-title {
-            margin-top: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .timeline {
-            margin-top: 20px;
-            position: relative;
-        }
-
         .timeline-item {
             background: white;
             padding: 15px;
             border-radius: 15px;
             margin-bottom: 15px;
             display: flex;
-            align-items: flex-start;
             gap: 15px;
             border-left: 5px solid var(--sage-green);
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal / Insight Style */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
-        .item-mood {
-            font-size: 2rem;
-            background: #f9f9f9;
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .item-content {
-            flex-grow: 1;
-        }
-
-        .item-date {
-            font-size: 0.75rem;
-            color: #999;
-            margin-bottom: 5px;
-        }
-
-        .item-text {
-            font-size: 0.95rem;
-            word-break: break-word;
-        }
-
-        .empty-state {
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 450px;
+            width: 90%;
+            border: 4px solid var(--soft-blue);
             text-align: center;
-            padding: 40px;
-            color: #bbb;
-            font-style: italic;
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .mood-selector {
-                gap: 5px;
-            }
-            .mood-btn {
-                width: 60px;
-                padding: 8px;
-            }
+        .insight-section { text-align: left; font-size: 0.95rem; margin-top: 15px; }
+        .insight-label { font-weight: bold; color: #88ab8e; display: block; margin-top: 12px; }
+        .quote { font-style: italic; margin-top: 20px; padding: 12px; background: #fdfcf0; border-radius: 12px; }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #88ab8e;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .close-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 15px;
+            border: none;
+            background: var(--soft-pink);
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .close-btn:hover { background: #f4b8cf; }
     </style>
 </head>
 <body>
@@ -227,68 +192,70 @@
             <p>Mekarkan harimu, catat perasaanmu.</p>
         </header>
 
+        <!-- API CONFIG -->
+        <div class="api-config">
+            🔑 Hubungkan Bloom AI:
+            <input type="password" id="apiKey" placeholder="Masukkan Gemini API Key">
+        </div>
+
         <section class="card">
             <h2>Bagaimana perasaanmu hari ini?</h2>
             
             <div class="mood-selector" id="moodSelector">
-                <button class="mood-btn" data-mood="Senang" data-emoji="😊">
-                    <span>😊</span>
-                    <span>Senang</span>
-                </button>
-                <button class="mood-btn" data-mood="Sedih" data-emoji="😢">
-                    <span>😢</span>
-                    <span>Sedih</span>
-                </button>
-                <button class="mood-btn" data-mood="Marah" data-emoji="😡">
-                    <span>😡</span>
-                    <span>Marah</span>
-                </button>
-                <button class="mood-btn" data-mood="Lelah" data-emoji="😴">
-                    <span>😴</span>
-                    <span>Lelah</span>
-                </button>
-                <button class="mood-btn" data-mood="Semangat" data-emoji="🤩">
-                    <span>🤩</span>
-                    <span>Semangat</span>
-                </button>
+                <button class="mood-btn" data-mood="Senang" data-emoji="😊"><span>😊</span><span>Senang</span></button>
+                <button class="mood-btn" data-mood="Sedih" data-emoji="😢"><span>😢</span><span>Sedih</span></button>
+                <button class="mood-btn" data-mood="Marah" data-emoji="😡"><span>😡</span><span>Marah</span></button>
+                <button class="mood-btn" data-mood="Lelah" data-emoji="😴"><span>😴</span><span>Lelah</span></button>
+                <button class="mood-btn" data-mood="Semangat" data-emoji="🤩"><span>🤩</span><span>Semangat</span></button>
             </div>
 
             <textarea id="journalInput" maxlength="280" placeholder="Tulis cerita singkatmu di sini..."></textarea>
             <div class="char-count"><span id="charCount">0</span>/280</div>
-
-            <button class="btn-save" id="saveBtn">Simpan Momen</button>
+            
+            <button class="btn-save" id="saveBtn">
+                <div class="loader" id="loader"></div>
+                <span id="btnText">Simpan & Tanya Bloom AI ✨</span>
+            </button>
         </section>
 
-        <div class="history-title">
-            <h2>Riwayat Mood Kamu</h2>
-            <button id="clearBtn" style="background: none; border: none; color: #ffb7b2; cursor: pointer; font-size: 0.8rem;">Hapus Semua</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin:0; font-size: 1.1rem;">Riwayat Jurnal</h2>
+            <button id="clearBtn" style="background:none; border:none; color:#f0a5a5; cursor:pointer; font-size: 0.8rem;">Hapus Semua</button>
         </div>
 
-        <div id="timeline" class="timeline">
-            <!-- Data riwayat akan muncul di sini -->
+        <div id="timeline"></div>
+    </div>
+
+    <!-- Modal AI Insight -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <h3>Pesan dari Bloom AI 🌸</h3>
+            <div id="aiResponse" class="insight-section"></div>
+            <button class="close-btn" onclick="closeModal()">Terima Kasih!</button>
         </div>
     </div>
 
     <script>
-        // State Management
         let selectedMood = null;
         let selectedEmoji = null;
+
+        // Elements
+        const moodBtns = document.querySelectorAll('.mood-btn');
         const journalInput = document.getElementById('journalInput');
         const charCount = document.getElementById('charCount');
-        const moodBtns = document.querySelectorAll('.mood-btn');
         const saveBtn = document.getElementById('saveBtn');
+        const loader = document.getElementById('loader');
+        const btnText = document.getElementById('btnText');
         const timeline = document.getElementById('timeline');
-        const clearBtn = document.getElementById('clearBtn');
+        const modal = document.getElementById('modalOverlay');
 
-        // Load data from LocalStorage on start
+        // 2. Load data otomatis saat halaman selesai dibuka
         document.addEventListener('DOMContentLoaded', displayEntries);
 
-        // Mood Selection Logic
+        // Mood Selection
         moodBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Remove active class from all
                 moodBtns.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked
                 btn.classList.add('active');
                 selectedMood = btn.getAttribute('data-mood');
                 selectedEmoji = btn.getAttribute('data-emoji');
@@ -300,39 +267,98 @@
             charCount.textContent = journalInput.value.length;
         });
 
-        // Save Entry Logic
-        saveBtn.addEventListener('click', () => {
+        // Main Save Logic
+        saveBtn.addEventListener('click', async () => {
+            const apiKey = document.getElementById('apiKey').value.trim();
             const text = journalInput.value.trim();
 
-            if (!selectedMood) {
-                alert('Pilih mood kamu dulu ya! ✨');
-                return;
+            if (!apiKey) return alert("Silakan hubungkan Gemini API Key terlebih dahulu.");
+            if (!selectedMood) return alert("Pilih mood kamu hari ini ya! ✨");
+            if (!text) return alert("Yuk, ceritakan sedikit jurnalmu agar AI bisa memberikan insight.");
+
+            setLoading(true);
+
+            try {
+                const aiResult = await askGemini(apiKey, selectedMood, text);
+                
+                const entry = {
+                    id: Date.now(),
+                    mood: selectedMood,
+                    emoji: selectedEmoji,
+                    text: text,
+                    aiInsight: aiResult,
+                    date: new Date().toLocaleString('id-ID', { 
+                        day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' 
+                    })
+                };
+
+                // Save to LocalStorage
+                let entries = JSON.parse(localStorage.getItem('moodBloomEntries')) || [];
+                entries.unshift(entry);
+                localStorage.setItem('moodBloomEntries', JSON.stringify(entries));
+
+                displayAIResult(aiResult);
+                displayEntries();
+                resetForm();
+
+            } catch (error) {
+                console.error("Error:", error);
+                // 4. Error handling ramah
+                if (error.message.includes("400") || error.message.includes("key")) {
+                    alert("Tidak dapat terhubung ke Bloom AI. Periksa API key kamu.");
+                } else {
+                    alert("Bloom AI sedang tidak tersedia, coba lagi sebentar.");
+                }
+            } finally {
+                setLoading(false);
             }
-
-            const entry = {
-                id: Date.now(),
-                mood: selectedMood,
-                emoji: selectedEmoji,
-                text: text || "Tidak ada catatan.",
-                date: new Date().toLocaleString('id-ID', { 
-                    weekday: 'long', 
-                    day: 'numeric', 
-                    month: 'long', 
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })
-            };
-
-            saveToLocalStorage(entry);
-            displayEntries();
-            resetForm();
         });
 
-        function saveToLocalStorage(entry) {
-            let entries = JSON.parse(localStorage.getItem('moodBloomEntries')) || [];
-            entries.unshift(entry); // Add to beginning of array
-            localStorage.setItem('moodBloomEntries', JSON.stringify(entries));
+        async function askGemini(key, mood, journal) {
+            const prompt = `Kamu adalah teman AI yang hangat dan suportif bernama MoodBloom. 
+            Pengguna sedang merasa ${mood} dan menulis jurnal: "${journal}".
+            
+            Berikan respon dalam Bahasa Indonesia dengan format JSON mentah (tanpa markdown box) sebagai berikut:
+            {
+                "insight": "Analisis singkat & hangat tentang perasaan mereka",
+                "aktivitas": "Satu saran aktivitas kecil yang sangat spesifik",
+                "kutipan": "Kutipan motivasi singkat yang relevan"
+            }`;
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // 1. Validasi jika Gemini tidak memberikan respon
+            if (!data.candidates || !data.candidates.length) {
+                throw new Error("AI tidak memberikan respon");
+            }
+
+            const rawText = data.candidates[0].content.parts[0].text;
+            const cleanJson = rawText.replace(/```json|```/gi, '').trim();
+            return JSON.parse(cleanJson);
+        }
+
+        function displayAIResult(result) {
+            const container = document.getElementById('aiResponse');
+            container.innerHTML = `
+                <span class="insight-label">💡 Insight:</span>
+                <p>${result.insight}</p>
+                <span class="insight-label">🌿 Coba Lakukan:</span>
+                <p>${result.aktivitas}</p>
+                <div class="quote">"${result.kutipan}"</div>
+            `;
+            modal.style.display = 'flex';
         }
 
         function displayEntries() {
@@ -340,34 +366,40 @@
             timeline.innerHTML = '';
 
             if (entries.length === 0) {
-                timeline.innerHTML = '<div class="empty-state">Belum ada catatan. Ayo mulai mencatat hari ini! 🌸</div>';
+                timeline.innerHTML = '<p style="text-align:center; color:#ccc; padding-top:20px;">Belum ada riwayat jurnal.</p>';
                 return;
             }
 
             entries.forEach(item => {
-                const itemHtml = `
+                timeline.innerHTML += `
                     <div class="timeline-item">
-                        <div class="item-mood">${item.emoji}</div>
-                        <div class="item-content">
-                            <div class="item-date">${item.date}</div>
-                            <div class="item-text"><strong>${item.mood}:</strong> ${item.text}</div>
+                        <div style="font-size:1.8rem; background:#f9f9f9; padding:5px; border-radius:10px;">${item.emoji}</div>
+                        <div style="flex-grow:1;">
+                            <div style="font-size:0.75rem; color:#aaa; margin-bottom:4px;">${item.date}</div>
+                            <div style="font-size:0.95rem;"><strong>${item.mood}</strong>: ${item.text}</div>
                         </div>
                     </div>
                 `;
-                timeline.innerHTML += itemHtml;
             });
         }
 
+        function setLoading(isLoading) {
+            saveBtn.disabled = isLoading;
+            loader.style.display = isLoading ? 'block' : 'none';
+            btnText.innerText = isLoading ? 'Bloom AI sedang berpikir...' : 'Simpan & Tanya Bloom AI ✨';
+        }
+
         function resetForm() {
-            selectedMood = null;
-            selectedEmoji = null;
             journalInput.value = '';
             charCount.textContent = '0';
             moodBtns.forEach(b => b.classList.remove('active'));
+            selectedMood = null;
         }
 
-        clearBtn.addEventListener('click', () => {
-            if (confirm('Hapus semua riwayat mood?')) {
+        function closeModal() { modal.style.display = 'none'; }
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if(confirm('Hapus semua riwayat jurnal kamu?')) {
                 localStorage.removeItem('moodBloomEntries');
                 displayEntries();
             }
